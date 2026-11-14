@@ -75,13 +75,24 @@
     .custom-modal p { font-size: 13.5px; color: #cbd5e1; line-height: 1.6; margin-bottom: 20px; }
     .custom-modal button { width: 100%; height: 44px; background: linear-gradient(135deg, #0284c7, #22d3ee); color: #000; border: none; border-radius: 12px; font-size: 14.5px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(34, 211, 238, 0.3); }
 
-    /* 화면 중앙에 쾅 떴다가 사라지는 거대한 빨간 경고장 */
+    /* 화면 중앙에 쾅 떴다가 사라지는 거대한 빨간 경고장 (+ 떨림 효과) */
     .center-glitch-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.88); display: flex; justify-content: center; align-items: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.15s ease; }
     .center-glitch-overlay.show { opacity: 1; pointer-events: auto; }
-    .center-glitch-box { background: rgba(239, 68, 68, 0.15); border: 2px solid #ef4444; border-radius: 16px; padding: 28px 20px; width: 88%; max-width: 340px; text-align: center; box-shadow: 0 0 40px rgba(239, 68, 68, 0.4); transform: scale(0.7); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    .center-glitch-overlay.show .center-glitch-box { transform: scale(1); }
-    .center-glitch-box h2 { color: #ef4444; font-size: 22px; font-weight: 900; margin-bottom: 10px; letter-spacing: -0.5px; }
-    .center-glitch-box p { color: #fca5a5; font-size: 15px; font-weight: 700; line-height: 1.5; }
+    
+    .center-glitch-box { background: rgba(239, 68, 68, 0.18); border: 2.5px solid #ef4444; border-radius: 18px; padding: 30px 22px; width: 88%; max-width: 340px; text-align: center; box-shadow: 0 0 50px rgba(239, 68, 68, 0.6); transform: scale(0.7); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .center-glitch-overlay.show .center-glitch-box { transform: scale(1); animation: shake 0.3s ease-in-out infinite alternate; }
+
+    @keyframes shake {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      20% { transform: translate(-2px, -1px) rotate(-1deg); }
+      40% { transform: translate(-1px, 2px) rotate(1deg); }
+      60% { transform: translate(2px, 1px) rotate(0deg); }
+      80% { transform: translate(1px, -1px) rotate(-1deg); }
+      100% { transform: translate(-1px, 2px) rotate(1deg); }
+    }
+
+    .center-glitch-box h2 { color: #ef4444; font-size: 24px; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.5px; }
+    .center-glitch-box p { color: #fca5a5; font-size: 15.5px; font-weight: 800; line-height: 1.55; }
 
     #screen-done { justify-content: center; align-items: center; text-align: center; }
     .check-circle { width: 76px; height: 76px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); border: 2px solid #10b981; color: #10b981; display: flex; justify-content: center; align-items: center; font-size: 36px; margin-bottom: 22px; }
@@ -128,13 +139,13 @@
       </div>
     </div>
 
-    <!-- 2. 스플래시 로딩 화면 -->
+    <!-- 2. 스플래시 로딩 화면 (문구 반영 완료) -->
     <div id="screen-splash" class="screen">
       <div class="splash-logo">
         <img src="clock.png" alt="Logo" onerror="this.src='https://raw.githubusercontent.com/ariadnaarena729-afk/STEAL-TIME/main/clock.png'">
       </div>
       <h2 style="font-size: 24px; font-weight: 800; letter-spacing: 1px;">STEAL TIME</h2>
-      <p style="font-size: 13.5px; color: #94a3b8; margin-top: 8px;">시간을 동기화하는 중...</p>
+      <p style="font-size: 13.5px; color: #94a3b8; margin-top: 8px;">시간을 가로채는 중...</p>
       <div class="spinner"></div>
     </div>
 
@@ -189,7 +200,7 @@
     </div>
   </div>
 
-  <!-- 2단계: 화면 중앙에 쾅 떴다가 사라지는 거대한 빨간 경고장 -->
+  <!-- 2단계: 화면 중앙에 쾅 떴다가 사라지는 거대한 빨간 경고장 (+ 떨림 효과) -->
   <div id="center-glitch" class="center-glitch-overlay">
     <div class="center-glitch-box">
       <h2>⚠ 경고</h2>
@@ -277,7 +288,12 @@
       document.getElementById('ticket-phone').textContent = savedUserPhone;
       switchScreen('screen-done');
 
-      // 화면 중앙에 거대한 빨간 경고장을 쾅 띄우기
+      // 폰 진동 울리기 (지원되는 모바일 브라우저용)
+      if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200]);
+      }
+
+      // 화면 중앙에 거대한 빨간 경고장을 쾅 띄우고 미세하게 떨리게 연출
       const glitchOverlay = document.getElementById('center-glitch');
       setTimeout(() => {
         glitchOverlay.classList.add('show');
