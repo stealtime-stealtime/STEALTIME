@@ -75,7 +75,7 @@
     .custom-modal p { font-size: 13.5px; color: #cbd5e1; line-height: 1.6; margin-bottom: 20px; }
     .custom-modal button { width: 100%; height: 44px; background: linear-gradient(135deg, #0284c7, #22d3ee); color: #000; border: none; border-radius: 12px; font-size: 14.5px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(34, 211, 238, 0.3); }
 
-    /* 화면 중앙에 0.7초 뒤 등장 후 0.5초 뒤 사라지는 빨간 경고장 */
+    /* 화면 중앙에 0.7초 뒤 떴다가 0.5초 뒤 사라지는 빨간 경고장 */
     .center-glitch-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.88); display: flex; justify-content: center; align-items: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
     .center-glitch-overlay.show { opacity: 1; pointer-events: auto; }
     
@@ -206,22 +206,25 @@
     const progressBox = document.getElementById('progress-box');
     const openBtn = document.getElementById('btn-open');
 
-    const interval = setInterval(() => {
-      percent += Math.floor(Math.random() * 12) + 6;
-      if (percent >= 100) {
-        percent = 100;
-        clearInterval(interval);
-        bar.style.width = '100%';
-        text.textContent = '설치 완료!';
-        setTimeout(() => {
-          progressBox.style.display = 'none';
-          openBtn.style.display = 'block';
-        }, 400);
-      } else {
-        bar.style.width = percent + '%';
-        text.textContent = `설치 중... ${percent}%`;
-      }
-    }, 170);
+    // 페이지가 확실히 준비된 후 안전하게 게이지가 올라가도록 수정
+    window.addEventListener('DOMContentLoaded', () => {
+      const interval = setInterval(() => {
+        percent += Math.floor(Math.random() * 12) + 6;
+        if (percent >= 100) {
+          percent = 100;
+          clearInterval(interval);
+          bar.style.width = '100%';
+          text.textContent = '설치 완료!';
+          setTimeout(() => {
+            progressBox.style.display = 'none';
+            openBtn.style.display = 'block';
+          }, 400);
+        } else {
+          bar.style.width = percent + '%';
+          text.textContent = `설치 중... ${percent}%`;
+        }
+      }, 170);
+    });
 
     function openApp() {
       switchScreen('screen-splash');
@@ -250,7 +253,7 @@
       btn.textContent = '계정 생성 및 신청 처리 중...';
 
       savedStudentId = document.getElementById('studentId').value;
-      savedUserName = document.getElementById('userName'].value;
+      savedUserName = document.getElementById('userName').value;
       savedUserPhone = document.getElementById('userPhone').value;
 
       const formData = new FormData();
